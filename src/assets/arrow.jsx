@@ -1,4 +1,4 @@
-export const Arrow = ({size, fill}) => (
+const Arrow = ({size, fill}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="88 0.0257801 96.05 176"
@@ -10,3 +10,4 @@ export const Arrow = ({size, fill}) => (
     />
   </svg>
 )
+export default Arrow

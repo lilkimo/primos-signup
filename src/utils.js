@@ -1,5 +1,10 @@
-import {loginRequest, graphConfig} from '../authConfig'
-import {msalInstance} from '../index'
+export const mod = (n, m) => ((n % m) + m) % m
+
+import {
+  loginRequest,
+  graphConfig,
+} from './authConfig'
+import {msalInstance} from './main'
 
 export async function callMsGraph(accessToken) {
   if (!accessToken) {

@@ -1,4 +1,4 @@
-export const CircleOne = ({size, fill}) => (
+const CircleOne = ({size, fill}) => (
   <svg
     xmlns='http://www.w3.org/2000/svg'
     viewBox='0 0 208 208'
@@ -10,3 +10,4 @@ export const CircleOne = ({size, fill}) => (
     />
   </svg>
 )
+export default CircleOne
