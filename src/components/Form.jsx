@@ -12,8 +12,8 @@ export default function Form({fullname}) {
 
   const name = useRef(null)
   const [error_name, set_error_name] = useState(false)
-  const [rol, set_rol] = useState(null)
-  const [error_rol, set_error_rol] = useState(true)
+  const [rol, set_rol] = useState('')
+  const [error_rol, set_error_rol] = useState(false)
   const nick = useRef(null)
   const [warn_nick, set_warn_nick] = useState(false)
   const siga_password = useRef(null)
@@ -46,8 +46,8 @@ export default function Form({fullname}) {
       .then( r => console.log('submitted') )
   }
   
-  async function get_schedule(event) {    
-    if (name.current.value == null || rol == null || error_rol)
+  async function get_schedule(event, force=false) {    
+    if (name.current.value == null || rol == '' || error_rol)
       return
     event.target.disabled = true
     
@@ -61,21 +61,22 @@ export default function Form({fullname}) {
       rol: rol.slice(0, 9) + (rol[10] === 'k'? 0: rol[10]),
       nick: nick.current.value,
     }
-    await api.post('/schedule', data)
-      .then(response => {
-        store.set_booked_schedule(response.schedule)
-        store.update_form(form)
-        store.next_phase()
-      })
-      .catch(error => {
-        if (!error_password[0] && error.response.status == 400)
-          set_error_password([true, error.body.detail])
-        else {
-          store.set_booked_schedule(Array(40).fill(false))
+    if (force) {
+      store.set_booked_schedule(Array(40).fill(false))
+      store.update_form(form)
+      store.next_phase()
+    }
+    else {
+      await api.post('/schedule', data)
+        .then(response => {
+          store.set_booked_schedule(response.schedule)
           store.update_form(form)
           store.next_phase()
-        }
-      })
+        })
+        .catch(error => {
+          set_error_password([true, error.body.detail])
+        })
+    }
     event.target.disabled = false
   }
 
@@ -95,7 +96,7 @@ export default function Form({fullname}) {
       >
         {store.phase == 0 && error_name &&
           <div className="text-sm text-justify bg-darkred rounded-xl border-2 border-solid border-red px-4 py-2">
-            No puedes dejar éste campo vacío
+            No puedes dejar este campo vacío
           </div>
         }
       </Input>
@@ -105,11 +106,14 @@ export default function Form({fullname}) {
         placeholder="202073573-1"
         onChange={handle_rol}
         onBlur={() => set_error_rol(rol?.length !== 11)}
-        value={rol?? ''}
+        value={rol}
       >
         {store.phase == 0 && error_rol &&
           <div className="text-sm text-justify bg-darkred rounded-xl border-2 border-solid border-red px-4 py-2">
-            Rol Inválido
+            {rol == ''
+              ? 'No puedes dejar este campo vacío'
+              :' Rol Inválido'
+            }
           </div>
         }
       </Input>
@@ -148,7 +152,7 @@ export default function Form({fullname}) {
           <div className="text-sm text-justify bg-darkblue rounded-xl border-2 border-solid border-blue px-4 py-2">
             Tus credenciales de acceso al SIGA serán utilizadas sólo para obtener tu horario
             y <u>no serán almacenadas</u>. Este proyecto es open source; puedes revisar cómo
-            serán tratados tus datos diréctamente en el código fuente.
+            serán tratados tus datos directamente en el código fuente.
           </div>
         }
       </Input>
@@ -159,12 +163,18 @@ export default function Form({fullname}) {
         </div>
       }
       <div className="flex gap-5">
-        {store.phase > 0 &&
+        {(store.phase > 0 || error_password[0]) &&
           <button
             className='w-full px-4 py-2 font-bold hover:underline'
-            onClick={store.prev_phase}
+            onClick={event => (store.phase == 0 && error_password[0])
+              ? get_schedule(event, true)
+              : store.prev_phase()
+            }
           >
-            Atrás
+            {store.phase > 0
+              ? 'Atrás'
+              : 'No importar'
+            }
           </button>
         }
         <button
@@ -180,7 +190,7 @@ export default function Form({fullname}) {
             ? store.phase > 1
               ? 'Enviar'
               : 'Siguiente'
-            : 'Importar Horario'
+            : 'Importar horario'
           }
         </button>
       </div>

@@ -38,34 +38,34 @@ export default function Schedule() {
         Rellena tu horario
       </span>
       <div className="flex gap-x-4 justify-between items-center">
-        <span className="flex items-center text-gray">
+        <span className="flex items-center gap-x-2 text-gray">
           <CircleOne
             size="1.5rem"
             fill="var(--gray)"
           />
-          &ensp;Importa tu horario
+          Importa tu horario
         </span>
         <Arrow
           size="1rem"
           fill="var(--gray)"
         />
-        <span className={`flex items-center ${store.phase != 1? "text-gray": ""}`}>
+        <span className={`flex items-center gap-x-2 ${store.phase != 1? "text-gray": ""}`}>
           <CircleTwo
             size="1.5rem"
             fill={`var(${store.phase == 1? "--blue": "--gray"})`}
           />
-          &ensp;Ajusta tu disponibilidad
+          Ajusta tu disponibilidad
         </span>
         <Arrow
           size="1rem"
           fill="var(--gray)"
         />
-        <span className={`flex items-center ${store.phase != 2? "text-gray": ""}`}>
+        <span className={`flex items-center gap-x-2 ${store.phase != 2? "text-gray": ""}`}>
           <CircleThree
             size="1.5em"
             fill={`var(${store.phase == 2? "--blue": "--gray"})`}
           />
-          &ensp;Ingresa tu horario deseado
+          Ingresa tu horario deseado
         </span>
       </div>
       <div className='grid w-full grid-flow-col grid-cols-[max-content_repeat(5,_1fr)] grid-rows-[auto_repeat(8,_1fr)] rounded-xl border-2 border-solid border-blue overflow-hidden '>
@@ -104,6 +104,20 @@ export default function Schedule() {
           )
           return [header, cell]
         })}
+      </div>
+      <div className="flex flex-row-reverse gap-x-8">
+        <span className="flex items-center gap-x-2">
+          <div className="bg-green w-12 h-6 rounded-xl"/>
+          Deseado
+        </span>
+        <span className="flex items-center gap-x-2">
+          <div className="bg-lightred w-12 h-6 rounded-xl"/>
+          No disponible
+        </span>
+        <span className="flex items-center gap-x-2">
+          <div className="bg-red w-12 h-6 rounded-xl"/>
+          No disponible (SIGA)
+        </span>
       </div>
     </div>
   )
